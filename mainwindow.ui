@@ -25,6 +25,10 @@
   <property name="windowTitle">
    <string>Convives Communication Room</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>C:/Users/Admin/Desktop/at_2.png</normaloff>C:/Users/Admin/Desktop/at_2.png</iconset>
+  </property>
   <property name="toolTipDuration">
    <number>2</number>
   </property>
@@ -44,11 +48,20 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
+    <property name="opaqueResize">
+     <bool>true</bool>
+    </property>
     <property name="handleWidth">
      <number>3</number>
     </property>
     <widget class="QLineEdit" name="msgbox"/>
     <widget class="QPushButton" name="send">
+     <property name="maximumSize">
+      <size>
+       <width>50</width>
+       <height>16777215</height>
+      </size>
+     </property>
      <property name="text">
       <string>Send</string>
      </property>
@@ -66,10 +79,26 @@
     <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
-    <widget class="QPlainTextEdit" name="chat1"/>
+    <property name="opaqueResize">
+     <bool>true</bool>
+    </property>
+    <widget class="QPlainTextEdit" name="chat1">
+     <property name="undoRedoEnabled">
+      <bool>false</bool>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+     <property name="textInteractionFlags">
+      <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+     </property>
+    </widget>
     <widget class="QPlainTextEdit" name="chat2">
      <property name="enabled">
       <bool>true</bool>
+     </property>
+     <property name="undoRedoEnabled">
+      <bool>false</bool>
      </property>
      <property name="readOnly">
       <bool>true</bool>
@@ -184,8 +213,6 @@
    </widget>
    <zorder>splitter_2</zorder>
    <zorder>splitter</zorder>
-   <zorder>splitter_5</zorder>
-   <zorder>splitter_6</zorder>
    <zorder>cover</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">

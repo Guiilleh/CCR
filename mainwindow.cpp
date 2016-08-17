@@ -8,6 +8,8 @@
 #include <QMessageBox>
 #include <QDateTime>
 #include <QTabWidget>
+#include <QFile>
+#include <QTextStream>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -27,6 +29,7 @@ QString clearCmd = "/clear";
 QString exitCmd = "/exit";
 QString chatBkUp = "/chatbu";
 QString noParse = "!! ";
+QString exportTxt = "/export";
 QString validID;
 QString validPW;
 bool idF = false;
@@ -89,11 +92,17 @@ void MainWindow::showLoginPage() {
 	}
 }
 
-QString date() {
+QString time() {
     QDateTime dateTime = QDateTime::currentDateTime();
-//    QString dateStr = dateTime.toString("d/M/yy h:mm ap");	// 13/12/16 8:15 pm
-	QString dateStr = dateTime.toString("h:mm:ss");				// 20:15:34
-    return dateStr;
+//    QString timeStr = dateTime.toString("d/M/yy h:mm ap");	// 13/12/16 8:15 pm
+	QString timeStr = dateTime.toString("h:mm:ss");				// 20:15:34
+	return timeStr;
+}
+
+QString dateTimeNoFormat() {
+	QDateTime dateTime = QDateTime::currentDateTime();
+	QString timeStr = dateTime.toString("ddMMyy_hmmss");
+	return timeStr;
 }
 
 void MainWindow::on_send_clicked() {
@@ -109,20 +118,34 @@ void MainWindow::on_send_clicked() {
 			} else {
 				ui->chat2->hide();
 			}
+		} else if(message==exportTxt) {
+			QFile exportTxt;
+			QString path = QCoreApplication::applicationDirPath();
+			path.append("/Chat_" + dateTimeNoFormat() + ".txt");	// "Chat_131216_233245.txt"
+			exportTxt.remove(path);							// removes file if new one will have same name,
+			exportTxt.setFileName(path);					// newest file will be updated
+			exportTxt.open(QIODevice::Append | QIODevice::Text);
+			if(!(exportTxt.isOpen())) {
+				QMessageBox::critical(this,"Error","Couldn't open file for writting.");
+			} else {
+				QTextStream out(&exportTxt);
+				out << ui->chat1->toPlainText() << endl;
+				exportTxt.flush();
+			}
+			exportTxt.close();
 		} else {
 			QString messageShortForNoParse = message.at(0);
 			messageShortForNoParse += message.at(1);
 			messageShortForNoParse += message.at(2);
 			if(messageShortForNoParse==noParse) {
 				message = message.remove(0,3);
-				ui->chat1->appendHtml(QString("[" + date() + "] <b>" + validID + "</b>: ").toUtf8());
-				ui->chat2->appendHtml(QString("[" + date() + "] <b>" + validID + "</b>: ").toUtf8());
-				ui->chat1->font().Courier;
+				ui->chat1->appendHtml(QString("[" + time() + "] <b>" + validID + "</b>: ").toUtf8());
+				ui->chat2->appendHtml(QString("[" + time() + "] <b>" + validID + "</b>: ").toUtf8());
 				ui->chat1->insertPlainText(QString(message).toUtf8());
 				ui->chat2->insertPlainText(QString(message).toUtf8());
 			} else {
-				ui->chat1->appendHtml(QString("[" + date() + "] <b>" + validID + "</b>: " + message).toUtf8());
-				ui->chat2->appendHtml(QString("[" + date() + "] <b>" + validID + "</b>: " + message).toUtf8());
+				ui->chat1->appendHtml(QString("[" + time() + "] <b>" + validID + "</b>: " + message).toUtf8());
+				ui->chat2->appendHtml(QString("[" + time() + "] <b>" + validID + "</b>: " + message).toUtf8());
 			}
 		}
     }
